@@ -11,6 +11,8 @@ class App extends Component {
       friends:[],
       postsuccessMessage: '',
       posterrorMessage: '',
+      deleteSuccessMessage: '',
+      deleteError: '',
     }  
   }
   
@@ -37,16 +39,44 @@ class App extends Component {
         postError: err.response.data.Error
       });
   })}
+
+  deleteFriend = friend => {
+    console.log(friend)
+    console.log(`http://localhost:5000/friends/${friend.id}`)
+    axios
+      .delete(`http://localhost:5000/friends/${friend.id}`)
+    .then(response => {
+      this.setState({
+        deleteSuccessMessage: response.data.successMessage,
+        deleteError: ""
+      });
+    })
+    .catch(err => {
+      this.setState({
+        deleteSuccessMessage: "",
+        deleteError: err.response.data.Error
+      });
+    });
+  };
   
   render() {
     return (
       <div className="App">
       <ul>
         {this.state.friends.map(friend =>{
-          return <Friend key={friend.id} friend={friend}/>
+          return <Friend 
+          key={friend.id}
+          friend={friend}
+          deleteFriend={this.deleteFriend} 
+          deleteError={this.state.deleteError}
+          deleteSuccessMessage={this.state.deleteSuccessMessage}
+          />
         })}
       </ul>
-        <FriendForm postNewFriend={this.postNewFriend}/>
+        <FriendForm 
+         postSuccessMessage={this.state.postSuccessMessage}
+         postError={this.state.postError}
+         postNewFriend={this.postNewFriend}/>
       </div>
     );
   }

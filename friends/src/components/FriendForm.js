@@ -31,6 +31,7 @@ class FriendForm extends React.Component{
         this.props.postNewFriend(this.state.newFriend);
       };
 
+
     render(){
         return(
             <form  onSubmit={this.props.postNewFriend}  className="friend-form">
