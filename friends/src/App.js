@@ -4,23 +4,24 @@ import Friend from './components/Friend'
 import FriendForm from './components/FriendForm'
 import './App.css';
 
+
+const clearedItem = {
+  name: '',
+  age: '',
+  email: '',
+}
+
 class App extends Component {
   constructor(){
     super();
     this.state = {
       friends:[],
-      newFriend: {
+      friend: {
         name: '',
-        age: null,
+        age: '',
         email: '',
-      },
-      postsuccessMessage: '',
-      posterrorMessage: '',
-      deleteSuccessMessage: '',
-      deleteError: '',
-      putSuccessMessage: '',
-      putError: '',
-      
+      },  
+      isUpdating: false,
     }  
   }
   
@@ -31,25 +32,16 @@ class App extends Component {
     .catch(err => console.log(err));
   }
 
-  postNewFriend = (e) =>{
-    e.preventDefault();
-    axios.post('http://localhost:5000/friends', this.state.newFriend)
+  postFriend = () =>{
+    axios.post('http://localhost:5000/friends', this.state.friend)
     .then(response => {
       console.log(response);
       this.setState({
-        postSuccessMessage: response.data.successMessage,
-        postError: "",
         friends: response.data
         });
     })
-    .catch(err => {
-      console.log(err);
-      this.setState({
-        postSuccessMessage: "",
-        postError: err.response.data.Error
-      });
-  })}
-
+    .catch(err => console.log(err));
+  }
   deleteFriend = friend => {
     console.log(friend.id)
     console.log(`http://localhost:5000/friends/${friend.id}`)
@@ -58,43 +50,39 @@ class App extends Component {
       .then(response => {
         console.log(response)
         this.setState({
-          deleteSuccessMessage: response.data.successMessage,
-          deleteError: "",
           friends:response.data
         });
     })
-    .catch(err => {
+    .catch(err => console.log(err));
+  }
+  populateFriend = (e, id) =>{
+    e.preventDefault();
+    
+    this.setState({ friend: this.state.friends.find(friend => friend.id === id) });
+    this.setState({ isUpdating: true });
+  };
+  updateFriend = () =>{
+    console.log(this.state.friend)
+    axios.put(`http://localhost:5000/friends/${this.state.friend.id}`, this.state.friend)
+    .then(res => {
+      console.log(res.data)
       this.setState({
-        deleteSuccessMessage: "",
-        deleteError: err.response.data.Error
-      });
-    });
-  };
-  putFriend = (friend) => {
-    console.log(friend)
-    axios
-      .put(`http://localhost:5000/friends/`, friend)
-      .then(response => {
-        console.log(response)
-        this.setState({
-          putSuccessMessage: response.data.successMessage,
-          putError: "",
-          friends: response.data,
-        });
+        friends: res.data,
+        isUpdating: false,
+        friend: clearedItem
       })
-      .catch(err => {
-        this.setState({
-          putSuccessMessage: "",
-          putError: err.response.data.Error
-        });
-      });
-  };
+      this.props.history.push("/")
+    })
+    .catch(err => console.log(err));
+  }
+
+
   handleChanges = e => {
     e.persist();
     this.setState(prevState => {
       return {
-        newFriend: {
-          ...prevState.newFriend,
+        friend: {
+          ...prevState.friend,
           [e.target.name]: e.target.value
         }
       };
@@ -110,17 +98,17 @@ class App extends Component {
           key={friend.id}
           friend={friend}
           deleteFriend={this.deleteFriend} 
-          deleteError={this.state.deleteError}
-          deleteSuccessMessage={this.state.deleteSuccessMessage}
+          populateFriend = {this.populateFriend}
           />
         })}
       </ul>
         <FriendForm 
-        postNewFriend={this.postNewFriend}
-        putFriend={this.putFriend}
-         newFriend = {this.state.newFriend}
+        isUpdating = {this.state.isUpdating}
+         postFriend={this.postFriend}
+         friend = {this.state.friend}
          friends={this.state.friends}
          handleChanges={this.handleChanges}
+         updateFriend={this.updateFriend}
          />
       </div>
     );

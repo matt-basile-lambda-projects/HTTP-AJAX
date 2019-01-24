@@ -6,30 +6,27 @@ class FriendForm extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            newFriend: props.newFriend
+            friend: props.friend
         }
     }
-    //   postNewFriend = e => {
-        
-    //     this.props.postNewFriend(this.state.newFriend);
-    //   };
-
-    //   putFriend = e =>{
-    //     e.preventDefault()
-    //     this.props.putFriend(this.state.newFriend);
-    //   }
-
+    handleSubmit = (e) =>{
+        e.preventDefault();
+        if(this.props.isUpdating){
+            this.props.updateFriend();
+        } else{
+            this.props.postFriend();
+        }
+    }
     render(){
-        console.log(this.props);
         return(
-            <form  onSubmit={this.props.postNewFriend}  className="friend-form">
+            <form  onSubmit={this.handleSubmit}  className="friend-form">
             <label>
               Name:
               <input 
               onChange={this.props.handleChanges}
               type="text" 
               name="name"
-              value={this.props.newFriend.name}
+              value={this.props.friend.name}
               placeholder="Name"
               />
             </label>
@@ -39,7 +36,7 @@ class FriendForm extends React.Component{
               onChange={this.props.handleChanges}
               type="number"
               name="age"
-              value={this.props.newFriend.Age}
+              value={this.props.friend.age}
               placeholder="Age"
                />
             </label>
@@ -48,12 +45,11 @@ class FriendForm extends React.Component{
               <input 
               onChange={this.props.handleChanges}
               type="text" 
-              value={this.props.newFriend.email}
+              value={this.props.friend.email}
               placeholder="Email"
               name="email" />
             </label>
-            <input onClick={this.props.postNewFriend} className="submit" type="submit" name="submit" value="Submit Friend" />
-            <input onClick={this.props.putFriend} className="submit" type="submit" name="submit" value="Update Friend" />
+            <button onClick={this.handleSubmit} type="submit" className="submit">{this.props.isUpdating ? "Update Friend" : "Add New Buddy"} </button>
           </form>
         )
 

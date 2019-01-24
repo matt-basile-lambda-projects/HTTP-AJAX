@@ -8,20 +8,14 @@ class Friend extends React.Component{
             friend: props.friend,
         }
     }
-    deleteFriend  = e => {
-        console.log(e.target)
-        e.preventDefault();
-        this.props.deleteFriend(this.state.friend);
-      };
-
     render(){
-        console.log(this.state.friend)
         return(
             <div className="friend-card">
                 <h3>{this.state.friend.name}</h3>
                 <p>{this.state.friend.age}</p>
                 <a href={`mailto:${this.state.friend.email}`} >{this.state.friend.email}</a>
-                <button onClick={this.deleteFriend}>Delete This Fake Friend</button>
+                <button onClick={() => this.props.deleteFriend(this.state.friend)}>Delete This Fake Friend</button>
+                <button onClick={ e => this.props.populateFriend(e, this.state.friend.id)}>Edit This Friend</button>
             </div>
         )
 
