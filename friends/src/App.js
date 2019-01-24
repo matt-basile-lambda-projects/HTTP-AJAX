@@ -13,6 +13,9 @@ class App extends Component {
       posterrorMessage: '',
       deleteSuccessMessage: '',
       deleteError: '',
+      putSuccessMessage: '',
+      putError: '',
+      
     }  
   }
   
@@ -24,12 +27,17 @@ class App extends Component {
   }
 
   postNewFriend = (friend) =>{
+    console.log(friend)
     axios.post('http://localhost:5000/friends', friend)
     .then(response => {
       console.log(response);
       this.setState({
         postSuccessMessage: response.data.successMessage,
-        postError: ""
+        postError: "",
+        friends: [
+          ...this.state.friends,
+          friend
+        ]
       });
     })
     .catch(err => {
@@ -41,15 +49,17 @@ class App extends Component {
   })}
 
   deleteFriend = friend => {
-    console.log(friend)
+    console.log(friend.id)
     console.log(`http://localhost:5000/friends/${friend.id}`)
     axios
       .delete(`http://localhost:5000/friends/${friend.id}`)
-    .then(response => {
-      this.setState({
-        deleteSuccessMessage: response.data.successMessage,
-        deleteError: ""
-      });
+      .then(response => {
+        // console.log(this.state.friends)
+        this.setState({
+          deleteSuccessMessage: response.data.successMessage,
+          deleteError: "",
+          friends: this.state.friends,
+        });
     })
     .catch(err => {
       this.setState({
@@ -57,6 +67,27 @@ class App extends Component {
         deleteError: err.response.data.Error
       });
     });
+  };
+  putFriend = (friend) => {
+    console.log(friend)
+    axios
+      .put(`http://localhost:5000/friends/${friend.id}`, friend)
+      .then(response => {
+        this.setState({
+          putSuccessMessage: response.data.successMessage,
+          putError: "",
+          friends: [
+            ...this.state.friends,
+            friend
+          ]
+        });
+      })
+      .catch(err => {
+        this.setState({
+          putSuccessMessage: "",
+          putError: err.response.data.Error
+        });
+      });
   };
   
   render() {
@@ -74,9 +105,13 @@ class App extends Component {
         })}
       </ul>
         <FriendForm 
+         friends={this.state.friends}
+         putFriend={this.putFriend}
          postSuccessMessage={this.state.postSuccessMessage}
          postError={this.state.postError}
-         postNewFriend={this.postNewFriend}/>
+         postNewFriend={this.postNewFriend}
+         putSuccessMessage={this.state.putSuccessMessage}
+         putError={this.state.putError}/>
       </div>
     );
   }

@@ -10,6 +10,8 @@ class FriendForm extends React.Component{
                 name: '',
                 age: null,
                 email: '',
+                friends: props.friends,
+                id: 0
             }
         }
     }
@@ -19,9 +21,11 @@ class FriendForm extends React.Component{
             newFriend:{
                 ...this.state.newFriend,
                 [ev.target.name]: ev.target.value }});
-        if(ev.target.name === 'submit'){
-            this.setState({submit: true})
-            ev.target.value='';
+        if(ev.target.name === 'age'){
+            this.setState({ 
+                newFriend:{
+                    ...this.state.newFriend,
+                    age: Number(ev.target.value) }})
         }
         // ev.target.value = '';
       }
@@ -31,8 +35,13 @@ class FriendForm extends React.Component{
         this.props.postNewFriend(this.state.newFriend);
       };
 
+      putFriend = e =>{
+        e.preventDefault()
+        this.props.putFriend(this.state.newFriend);
+      }
 
     render(){
+        console.log(this.props);
         return(
             <form  onSubmit={this.props.postNewFriend}  className="friend-form">
             <label>
@@ -53,7 +62,8 @@ class FriendForm extends React.Component{
               onChange={this.handleChange}
               type="text" name="email" />
             </label>
-            <input onClick={this.postNewFriend} className="submit" type="submit" name="submit" value="Submit" />
+            <input onClick={this.postNewFriend} className="submit" type="submit" name="submit" value="Submit Friend" />
+            <input onClick={this.putFriend} className="submit" type="submit" name="submit" value="Update Friend" />
           </form>
         )
 

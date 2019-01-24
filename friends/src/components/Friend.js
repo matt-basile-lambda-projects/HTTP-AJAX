@@ -17,9 +17,11 @@ class Friend extends React.Component{
     render(){
         console.log(this.state.friend)
         return(
-            <div>
-            <li>{this.state.friend.name}</li>
-            <button onClick={this.deleteFriend}>Delete This Fake Ass Friend</button>
+            <div className="friend-card">
+                <h3>{this.state.friend.name}</h3>
+                <p>{this.state.friend.age}</p>
+                <a href={`mailto:${this.state.friend.email}`} >{this.state.friend.email}</a>
+                <button onClick={this.deleteFriend}>Delete This Fake Friend</button>
             </div>
         )
 
