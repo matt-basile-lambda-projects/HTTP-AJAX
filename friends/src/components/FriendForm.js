@@ -6,39 +6,18 @@ class FriendForm extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            newFriend: {
-                name: '',
-                age: null,
-                email: '',
-                friends: props.friends,
-                id: 0
-            }
+            newFriend: props.newFriend
         }
     }
-    handleChange = ev => {
-        ev.preventDefault();
-        this.setState({ 
-            newFriend:{
-                ...this.state.newFriend,
-                [ev.target.name]: ev.target.value }});
-        if(ev.target.name === 'age'){
-            this.setState({ 
-                newFriend:{
-                    ...this.state.newFriend,
-                    age: Number(ev.target.value) }})
-        }
-        // ev.target.value = '';
-      }
+    //   postNewFriend = e => {
+        
+    //     this.props.postNewFriend(this.state.newFriend);
+    //   };
 
-      postNewFriend = e => {
-        e.preventDefault();
-        this.props.postNewFriend(this.state.newFriend);
-      };
-
-      putFriend = e =>{
-        e.preventDefault()
-        this.props.putFriend(this.state.newFriend);
-      }
+    //   putFriend = e =>{
+    //     e.preventDefault()
+    //     this.props.putFriend(this.state.newFriend);
+    //   }
 
     render(){
         console.log(this.props);
@@ -47,23 +26,34 @@ class FriendForm extends React.Component{
             <label>
               Name:
               <input 
-              onChange={this.handleChange}
-              type="text" name="name" />
+              onChange={this.props.handleChanges}
+              type="text" 
+              name="name"
+              value={this.props.newFriend.name}
+              placeholder="Name"
+              />
             </label>
             <label>
               Age:
               <input 
-              onChange={this.handleChange}
-              type="text" name="age" />
+              onChange={this.props.handleChanges}
+              type="number"
+              name="age"
+              value={this.props.newFriend.Age}
+              placeholder="Age"
+               />
             </label>
             <label>
               Email:
               <input 
-              onChange={this.handleChange}
-              type="text" name="email" />
+              onChange={this.props.handleChanges}
+              type="text" 
+              value={this.props.newFriend.email}
+              placeholder="Email"
+              name="email" />
             </label>
-            <input onClick={this.postNewFriend} className="submit" type="submit" name="submit" value="Submit Friend" />
-            <input onClick={this.putFriend} className="submit" type="submit" name="submit" value="Update Friend" />
+            <input onClick={this.props.postNewFriend} className="submit" type="submit" name="submit" value="Submit Friend" />
+            <input onClick={this.props.putFriend} className="submit" type="submit" name="submit" value="Update Friend" />
           </form>
         )
 

@@ -9,6 +9,11 @@ class App extends Component {
     super();
     this.state = {
       friends:[],
+      newFriend: {
+        name: '',
+        age: null,
+        email: '',
+      },
       postsuccessMessage: '',
       posterrorMessage: '',
       deleteSuccessMessage: '',
@@ -19,26 +24,23 @@ class App extends Component {
     }  
   }
   
-  componentDidMount(){
+  componentDidMount(){ 
     console.log("CDM running")
     axios.get('http://localhost:5000/friends')
     .then(res => this.setState({friends:res.data}))
     .catch(err => console.log(err));
   }
 
-  postNewFriend = (friend) =>{
-    console.log(friend)
-    axios.post('http://localhost:5000/friends', friend)
+  postNewFriend = (e) =>{
+    e.preventDefault();
+    axios.post('http://localhost:5000/friends', this.state.newFriend)
     .then(response => {
       console.log(response);
       this.setState({
         postSuccessMessage: response.data.successMessage,
         postError: "",
-        friends: [
-          ...this.state.friends,
-          friend
-        ]
-      });
+        friends: response.data
+        });
     })
     .catch(err => {
       console.log(err);
@@ -54,11 +56,11 @@ class App extends Component {
     axios
       .delete(`http://localhost:5000/friends/${friend.id}`)
       .then(response => {
-        // console.log(this.state.friends)
+        console.log(response)
         this.setState({
           deleteSuccessMessage: response.data.successMessage,
           deleteError: "",
-          friends: this.state.friends,
+          friends:response.data
         });
     })
     .catch(err => {
@@ -71,15 +73,13 @@ class App extends Component {
   putFriend = (friend) => {
     console.log(friend)
     axios
-      .put(`http://localhost:5000/friends/${friend.id}`, friend)
+      .put(`http://localhost:5000/friends/`, friend)
       .then(response => {
+        console.log(response)
         this.setState({
           putSuccessMessage: response.data.successMessage,
           putError: "",
-          friends: [
-            ...this.state.friends,
-            friend
-          ]
+          friends: response.data,
         });
       })
       .catch(err => {
@@ -89,7 +89,18 @@ class App extends Component {
         });
       });
   };
-  
+  handleChanges = e => {
+    e.persist();
+    this.setState(prevState => {
+      return {
+        newFriend: {
+          ...prevState.newFriend,
+          [e.target.name]: e.target.value
+        }
+      };
+    });
+  };
+
   render() {
     return (
       <div className="App">
@@ -105,13 +116,12 @@ class App extends Component {
         })}
       </ul>
         <FriendForm 
+        postNewFriend={this.postNewFriend}
+        putFriend={this.putFriend}
+         newFriend = {this.state.newFriend}
          friends={this.state.friends}
-         putFriend={this.putFriend}
-         postSuccessMessage={this.state.postSuccessMessage}
-         postError={this.state.postError}
-         postNewFriend={this.postNewFriend}
-         putSuccessMessage={this.state.putSuccessMessage}
-         putError={this.state.putError}/>
+         handleChanges={this.handleChanges}
+         />
       </div>
     );
   }
