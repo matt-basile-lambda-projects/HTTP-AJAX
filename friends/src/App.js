@@ -30,6 +30,7 @@ class App extends Component {
     axios.get('http://localhost:5000/friends')
     .then(res => this.setState({friends:res.data}))
     .catch(err => console.log(err));
+    
   }
 
   postFriend = () =>{
@@ -37,7 +38,8 @@ class App extends Component {
     .then(response => {
       console.log(response);
       this.setState({
-        friends: response.data
+        friends: response.data,
+        friend:clearedItem
         });
     })
     .catch(err => console.log(err));
@@ -57,7 +59,6 @@ class App extends Component {
   }
   populateFriend = (e, id) =>{
     e.preventDefault();
-    
     this.setState({ friend: this.state.friends.find(friend => friend.id === id) });
     this.setState({ isUpdating: true });
   };
@@ -67,11 +68,12 @@ class App extends Component {
     .then(res => {
       console.log(res.data)
       this.setState({
-        friends: res.data,
+        friends:res.data,
         isUpdating: false,
         friend: clearedItem
       })
-      this.props.history.push("/")
+      
+      this.props.history.push()
     })
     .catch(err => console.log(err));
   }

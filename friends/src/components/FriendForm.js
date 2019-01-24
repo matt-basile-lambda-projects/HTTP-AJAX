@@ -20,6 +20,7 @@ class FriendForm extends React.Component{
     render(){
         return(
             <form  onSubmit={this.handleSubmit}  className="friend-form">
+            <h2>{this.props.isUpdating ? "Update Friend" : "Add New Buddy"}</h2>
             <label>
               Name:
               <input 
