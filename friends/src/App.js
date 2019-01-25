@@ -3,6 +3,7 @@ import axios from 'axios';
 import Friend from './components/Friend'
 import FriendForm from './components/FriendForm'
 import './App.css';
+import './css/tailwind.css'
 
 
 const clearedItem = {
@@ -30,6 +31,7 @@ class App extends Component {
     axios.get('http://localhost:5000/friends')
     .then(res => this.setState({friends:res.data}))
     .catch(err => console.log(err));
+    
   }
 
   postFriend = () =>{
@@ -37,7 +39,8 @@ class App extends Component {
     .then(response => {
       console.log(response);
       this.setState({
-        friends: response.data
+        friends: response.data,
+        friend:clearedItem
         });
     })
     .catch(err => console.log(err));
@@ -57,7 +60,6 @@ class App extends Component {
   }
   populateFriend = (e, id) =>{
     e.preventDefault();
-    
     this.setState({ friend: this.state.friends.find(friend => friend.id === id) });
     this.setState({ isUpdating: true });
   };
@@ -67,11 +69,12 @@ class App extends Component {
     .then(res => {
       console.log(res.data)
       this.setState({
-        friends: res.data,
+        friends:res.data,
         isUpdating: false,
         friend: clearedItem
       })
-      this.props.history.push("/")
+      
+      this.props.history.push()
     })
     .catch(err => console.log(err));
   }
@@ -91,8 +94,8 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-      <ul>
+      <div className="App w-4/5  mx-auto flex bg-purple-light">
+        <div className=" w-1/2 flex flex-wrap justify-center mb-20 mt-10">
         {this.state.friends.map(friend =>{
           return <Friend 
           key={friend.id}
@@ -101,7 +104,8 @@ class App extends Component {
           populateFriend = {this.populateFriend}
           />
         })}
-      </ul>
+        </div>
+        <div className="w-1/2 my-20">
         <FriendForm 
         isUpdating = {this.state.isUpdating}
          postFriend={this.postFriend}
@@ -110,6 +114,7 @@ class App extends Component {
          handleChanges={this.handleChanges}
          updateFriend={this.updateFriend}
          />
+        </div>
       </div>
     );
   }
